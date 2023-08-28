@@ -10,7 +10,7 @@ keywords:
   - bourse
   - établissement
 themes:
-  - Education
+  - Education 
 content_intro: |
   L' **API Scolarité élève** permet de vérifier si un élève est bien scolarisé dans un établissement donné, et s'il est boursier ou non.
 
@@ -55,24 +55,32 @@ Les données du premier degré (primaire) sont mises à jour en temps réel. Les
 Les informations, même si elles évoluent principalement lors de la rentrée scolaire en septembre, peuvent changer en cours d’année (déménagements, etc.).
 Attention, si un élève est indiqué “non-boursier” avant mi-octobre, il ne faut pas prendre en compte cette information. Le statut non-boursier est véritablement fiable à partir de mi-octobre.
 
+### Modalités d'appel
+Cette API propose une modalité d’appel avec les données d’identité : 
+- Nom, prénom,
+- sexe et date de naissance de l’élève,
+- code UAI de l’établissement
+- année scolaire souhaitée.
+
 ### Données disponibles
 
 | Nom         | Description                                                                                                              |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Commune     | Le nom, la population, le code INSEE, le code postal, la géolocalisation (latitude, longitude) et le contour (GeoJSON), localisation de la mairie |
-| Département | Le nom, le code INSEE du département, et la région de rattachement                                                       |
-| Région      | La liste des régions et leur code INSEE                                                                                  |
-| EPCI        | Le nom, le département et la région de rattachement, le contour des Etablissements publics de coopération intercommunale |
+| Information sur l'élève     | Le nom, prénom, sexe, date de naissance de l'élève. La recherhce s'effectue avec les données entrée en paramètre. Si les nom ou prénom sont incomplets en entrée, ils sont retournés complets en retour. |
+| Code UAI de l'établissement | Code d'unité administrative immatriculée (code UAI) de l'établissement où est scolarisé l'élève. Ce code unique inscrit au répertoire national des établissements est composé de 7 chiffres et d'une lettre ; les trois premiers chiffres correspondent au numéro de département de l'établissement.Pour retrouver facilement le code UAI d'un établissement à partir d' informations plus facilement connues des usagers (commune, code postal, etc.), vous pouvez utiliser l'[API "Annuaire de l'éducation nationale"](https://api.gouv.fr/les-api/api-annuaire-education).NB : L'établissement 0861288H (CNED Direction générale) n'existe pas dans l'API annuaire de l'éducation nationale, il faudra donc compléter la liste des établissements avec une ligne CNED à laquelle sera associée le code UAI qui sera en passé en entrée. |
+| Année scolaire      | Année scolaire de l'élève au format AAAA-AAAA ou AAAA (AAAA= 2023 pour l'année scolaire 2023-2024)   |
+| Est scolarisé        | True / False : indique si l'élève est scolarisé dans l'établissement. |
+| Est boursier        | True / False : indique si l'élève est boursier dans l'établissement. Les bourses concernent uniquement les élèves des collèges et lycées. NB : Si le statut boursier est à "false" avant mi-octobre, cela ne signifie pas forcément que l'élève n'est pas boursier. Il peut s'agir d'un faux négatif lié à une absence de l'information en base. Pour en savoir plus consulter la fiche métier : https://particulier.api.gouv.fr/catalogue/education_nationale/statut_eleve_scolarise#faq_entry_answer_1_api_particulier_endpoint_education_nationale_statut_eleve_scolarise|
+| Niveau de bourse        | exemple : 1 : indique l'échelon de la bourse de l'élève. Est à "null" quand "est_boursier" est "false". Les bourses concernent uniquement les élèves des collèges et lycées. Il existe trois échelons de bourses pour les collégiens (1 à 3) et six échelons pour les lycéens (1 à 6), correspondant aux montants reçus par l'élève pour l'année scolaire. Pour en savoir plus, consulter la FAQ : https://particulier.api.gouv.fr/catalogue/education_nationale/statut_eleve_scolarise#faq_entry_answer_2_api_particulier_endpoint_education_nationale_statut_eleve_scolarise |
+| Code statut de l'élève  | Indique le statut sous lequel l'élève est scolarisé dans l'établissement. Les valeurs sont susceptibles d'évoluer : ST : Scolaire, il s'agit du statut de base renvoyé pour près de 95% des élèves / AP : Apprenti / CQ : Contrat de qualification / FC : Formation continue / ED : Enseignement à distance / IN : Candidat individuel / FQ : Stagiaire de la formation Professionnelle / SC : Scolaire ou formation initiale / CP : Contrat de professionnalisation. / NC : Non connu ou non communiqué. |
+| Libellé statut de l'élève        | Exemple : SCOLAIRE : Libellé du statut sous lequel l'élève est scolarisé dans l'établissement.|
 
-### Couverture du territoire
 
-France métropolitaine, [DROM](https://fr.wikipedia.org/wiki/D%C3%A9partement_et_r%C3%A9gion_d%27outre-mer) et [COM](https://fr.wikipedia.org/wiki/Collectivit%C3%A9_d%27outre-mer).
+### Conditions d'utilisation des données 
 
-### Coordonnées géographiques
+ Cette API et l’utilisation de ses données est soumise aux CGU générales d’API Particulier, dont voici les principaux éléments auxquels vous vous engagez :
 
-Cette API utilise exclusivement des coordonnées géographiques [WGS-84](https://fr.wikipedia.org/wiki/WGS_84).
-Elle peut renvoyer des données au format JSON ou [GeoJSON](http://geojson.org).
-
-### Données source
-
-[Toutes les données utilisées](https://github.com/etalab/api-communes#données-sources) sont sous licences Open Data.
+    - ne demander que les données strictement nécessaires ;
+    - ne pas utiliser votre jeton d’accès pour une démarche différente de celle indiquée lors de votre demande (le cas échéant le jeton sera révoqué) ;
+    - présenter les données obtenues uniquement aux seuls agents habilités et à tracer l’accès de ces agents aux données ;
+    - ne pas commercialiser les données reçues et à ne pas les communiquer à des tiers en dehors des cas prévus par la loi.
